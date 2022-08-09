@@ -1,78 +1,21 @@
 const express = require("express");
-const Joi = require("joi");
-const contacts = require("../../models/contacts");
+const { basedir } = global;
+const { ctrlWrap } = require(`${basedir}/helpers`);
 
-const { createError } = require("../../helpers");
+const ctrl = require(`${basedir}/controllers/contacts`);
 
 const router = express.Router();
 
-const contactAddSchema = Joi.object({
-  name: Joi.string().required(),
-  email: Joi.string().required(),
-  phone: Joi.string().required(),
-});
+router.get("/", ctrlWrap(ctrl.getAll));
 
-router.get("/", async (req, res, next) => {
-  try {
-    const result = await contacts.listContacts();
-    res.json(result);
-  } catch (error) {
-    next(error);
-  }
-});
+router.get("/:contactId", ctrlWrap(ctrl.getById));
 
-router.get("/:contactId", async (req, res, next) => {
-  try {
-    const { contactId } = req.params;
-    const result = await contacts.getContactById(contactId);
-    if (!result) {
-      throw createError(404);
-    }
+router.post("/", ctrlWrap(ctrl.add));
 
-    return res.json(result);
-  } catch (error) {
-    next(error);
-  }
-});
+router.delete("/:contactId", ctrlWrap(ctrl.deleteById));
 
-router.post("/", async (req, res, next) => {
-  try {
-    const { error } = contactAddSchema.validate(req.body);
-    if (error) {
-      throw createError(400, error.message);
-    }
-    const result = await contacts.addContact(req.body);
-    res.status(201).json(result);
-  } catch (error) {
-    next(error);
-  }
-});
+router.put("/:contactId", ctrlWrap(ctrl.update));
 
-router.delete("/:contactId", async (req, res, next) => {
-  try {
-    const { contactId } = req.params;
-    const result = await contacts.removeContact(contactId);
-    if (!result) {
-      throw createError(404);
-    }
-    res.json({ message: "Contact deleted" });
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.put("/:contactId", async (req, res, next) => {
-  try {
-    const { error } = contactAddSchema.validate(req.body);
-    if (error) {
-      throw createError(400, error.message);
-    }
-    const { contactId } = req.params;
-    const result = await contacts.updateContact(contactId, req.body);
-    res.status(201).json(result);
-  } catch (error) {
-    next(error);
-  }
-});
+router.patch("/:contactId/favorite", ctrlWrap(ctrl.updateStatusContact));
 
 module.exports = router;
