@@ -1,7 +1,7 @@
 const { createError } = require("../../helpers");
 const { Contact } = require("../../models/contact");
 
-const deleteById = async (req, res, next) => {
+const deleteById = async (req, res) => {
   const { contactId } = req.params;
   const result = await Contact.findByIdAndDelete(contactId);
   if (!result) {

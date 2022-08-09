@@ -9,5 +9,3 @@ function ctrlWrap(ctrl) {
 }
 
 module.exports = ctrlWrap;
-
-// router.get('/', ctrlWrap(ctrl.getHandler));

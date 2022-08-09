@@ -1,7 +1,7 @@
 const { createError } = require("../../helpers");
 const { Contact, schemas } = require("../../models/contact");
 
-const updateStatusContact = async (req, res, next) => {
+const updateStatusContact = async (req, res) => {
   const { error } = schemas.updateFavorite.validate(req.body);
   if (error) {
     throw createError(400, error.message);
