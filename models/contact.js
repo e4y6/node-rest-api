@@ -7,6 +7,7 @@ const contactSchema = new Schema(
     email: String,
     phone: String,
     favorite: { type: Boolean, default: false },
+    owner: { type: Schema.Types.ObjectId, ref: "user" },
   },
   { versionKey: false, timestamps: true }
 );
